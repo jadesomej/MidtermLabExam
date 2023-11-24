@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Guessing Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 50px;
+      background-color: #royalblue; /* Light Sky Blue */
+      background-image: url('background.jpg'); /* Replace with your image */
+      background-size: cover;
+      color: #333;
+    }
+
+    h1 {
+      color: #003366; /* Dark Blue */
+    }
+
+    #result {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      margin-top: 10px;
+      cursor: pointer;
+      background-color: #4CAF50; /* Green */
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button.retry {
+      background-color: greenyellow; /* green */
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Number Guessing Game</h1>
+  <p>Guess a number between 1 and 10:</p>
+  <input type="number" id="userGuess" min="1" max="10">
+  <button id="submitBtn" onclick="checkGuess()">Submit Guess</button>
+  <p id="result"></p>
+  <p id="chances">Chances left: 3</p>
+  <button id="retryBtn" class="retry" onclick="resetGame()" disabled>Retry</button>
+
+  <script>
+    let secretNumber;
+    let remainingChances;
+
+    function startGame() {
+      secretNumber = Math.floor(Math.random() * 10) + 1;
+      remainingChances = 3;
+      document.getElementById('chances').innerHTML = `Chances left: ${remainingChances}`;
+      document.getElementById('retryBtn').disabled = true;
+      document.getElementById('submitBtn').disabled = false;
+    }
+
+    function checkGuess() {
+      const userGuess = parseInt(document.getElementById('userGuess').value);
+
+      if (isNaN(userGuess) || userGuess < 1 || userGuess > 10) {
+        alert('Please enter a valid number between 1 and 10.');
+        return;
+      }
+
+      remainingChances--;
+
+      if (userGuess === secretNumber) {
+        document.getElementById('result').innerHTML = `Congratulations! You guessed the number ${secretNumber}.`;
+        document.getElementById('result').style.color = '#4CAF50'; // Green
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('retryBtn').disabled = false;
+      } else {
+        const hint = userGuess < secretNumber ? 'higher' : 'lower';
+        document.getElementById('result').innerHTML = `Try again! Guess ${hint}.`;
+
+        if (remainingChances === 0) {
+          document.getElementById('result').innerHTML = `Sorry, you ran out of chances. The correct number was ${secretNumber}.`;
+          document.getElementById('result').style.color = '#FF5733'; // Red
+          document.getElementById('submitBtn').disabled = true;
+          document.getElementById('retryBtn').disabled = false;
+        } else {
+          document.getElementById('chances').innerHTML = `Chances left: ${remainingChances}`;
+        }
+      }
+    }
+
+    function resetGame() {
+      startGame();
+      document.getElementById('userGuess').value = '';
+      document.getElementById('result').innerHTML = '';
+    }
+
+    // Start the game when the page loads
+    window.onload = startGame;
+  </script>
+</body>
+</html>
